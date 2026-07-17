@@ -1,0 +1,10 @@
+aws_region          = "eu-north-1"
+project_name        = "terraform-devops"
+vpc_cidr            = "10.0.0.0/16"
+public_subnet_cidr  = "10.0.1.0/24"
+private_subnet_cidr = "10.0.2.0/24"
+
+availability_zone = "eu-north-1a"
+ami_id            = "ami-05bfa4a7765f38076"
+instance_type     = "t3.micro"
+key_name          = "dynamic-agent-key-pair"
