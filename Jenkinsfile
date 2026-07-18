@@ -5,49 +5,161 @@ pipeline {
     }
 
     environment {
+
         AWS_DEFAULT_REGION = 'eu-north-1'
+        TF_IN_AUTOMATION = 'true'
+
+    }
+
+    options {
+
+        timestamps()
+
+        ansiColor('xterm')
+
     }
 
     stages {
 
         stage('Checkout Source') {
+
             steps {
+
+                echo "========== CHECKOUT SOURCE =========="
+
                 checkout scm
+
             }
+
         }
 
         stage('Verify Tools') {
+
             steps {
+
                 sh '''
-                    echo "===== Tool Versions ====="
+                echo "========== VERIFY TOOL VERSIONS =========="
 
-                    terraform version
-                    aws --version
-                    git --version
-                    java -version
+                echo ""
 
-                    pwd
-                    ls -la
+                echo "Terraform Version:"
+                terraform version
+
+                echo ""
+
+                echo "AWS CLI Version:"
+                aws --version
+
+                echo ""
+
+                echo "Git Version:"
+                git --version
+
+                echo ""
+
+                echo "Java Version:"
+                java -version
+
+                echo ""
+
+                echo "Current Directory:"
+                pwd
+
+                echo ""
+
+                echo "Project Files:"
+                ls -la
                 '''
+
             }
+
         }
 
         stage('Terraform Init') {
+
             steps {
-                sh 'terraform init'
+
+                echo "========== TERRAFORM INIT =========="
+
+                sh '''
+                terraform init
+                '''
+
             }
+
         }
 
         stage('Terraform Validate') {
+
             steps {
-                sh 'terraform validate'
+
+                echo "========== TERRAFORM VALIDATE =========="
+
+                sh '''
+                terraform validate
+                '''
+
             }
+
         }
 
         stage('Terraform Plan') {
+
             steps {
-                sh 'terraform plan'
+
+                echo "========== TERRAFORM PLAN =========="
+
+                sh '''
+                terraform plan -out=tfplan
+                '''
+
             }
+
+        }
+
+        stage('Terraform Apply') {
+
+            steps {
+
+                echo "========== TERRAFORM APPLY =========="
+
+                sh '''
+                terraform apply -auto-approve tfplan
+                '''
+
+            }
+
+        }
+
+        stage('Terraform Outputs') {
+
+            steps {
+
+                echo "========== TERRAFORM OUTPUT =========="
+
+                sh '''
+                terraform output
+                '''
+
+            }
+
+        }
+
+        stage('Upload Project To S3') {
+
+            steps {
+
+                echo "========== UPLOADING PROJECT TO S3 =========="
+
+                sh '''
+                aws s3 cp . s3://jenkins-backup-vansh-2026/terraform-project/ \
+                --recursive \
+                --exclude ".git/*" \
+                --exclude ".terraform/*"
+                '''
+
+            }
+
         }
 
     }
@@ -55,16 +167,31 @@ pipeline {
     post {
 
         always {
+
+            echo "======================================"
+
             echo "Pipeline Finished"
+
+            echo "======================================"
+
         }
 
         success {
-            echo "Terraform Validation Successful"
+
+            echo "Infrastructure Provisioned Successfully"
+
+            echo "Project Uploaded To S3"
+
+            echo "Dynamic Agent Will Be Automatically Terminated By Jenkins EC2 Plugin"
+
         }
 
         failure {
+
             echo "Pipeline Failed"
+
         }
 
     }
+
 }
