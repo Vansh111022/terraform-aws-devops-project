@@ -1,9 +1,12 @@
 resource "aws_instance" "ubuntu" {
 
-  ami           = var.ami_id
-  instance_type = var.instance_type
-  subnet_id     = var.public_subnet_id
-  key_name      = var.key_name
+  ami                    = var.ami_id
+
+  instance_type          = var.instance_type
+
+  subnet_id              = var.public_subnet_id
+
+  key_name               = var.key_name
 
   vpc_security_group_ids = [
     var.security_group_id
@@ -13,7 +16,34 @@ resource "aws_instance" "ubuntu" {
 
   user_data = file("${path.root}/userdata.sh")
 
-  tags = {
-    Name = "${var.project_name}-server"
+  monitoring = true
+
+  metadata_options {
+
+    http_endpoint = "enabled"
+
+    http_tokens = "required"
+
   }
+
+  root_block_device {
+
+    volume_size = 20
+
+    volume_type = "gp3"
+
+    delete_on_termination = true
+
+  }
+
+  tags = {
+
+    Name = "${var.project_name}-server"
+
+    Environment = "Dev"
+
+    ManagedBy = "Terraform"
+
+  }
+
 }

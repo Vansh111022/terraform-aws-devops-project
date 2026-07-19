@@ -2,8 +2,10 @@
 
 apt-get update -y
 
-apt-get install -y git unzip curl wget
+apt-get install -y nginx git unzip curl
 
-apt-get install -y awscli
+systemctl enable nginx
 
-echo "Terraform EC2 is ready." > /home/ubuntu/status.txt
+systemctl start nginx
+
+echo "<h1>Terraform EC2 Created Successfully</h1>" > /var/www/html/index.html
