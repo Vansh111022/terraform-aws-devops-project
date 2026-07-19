@@ -82,7 +82,7 @@ pipeline {
                 echo "========== TERRAFORM INIT =========="
 
                 sh '''
-                terraform init
+                terraform init -reconfigure
                 '''
 
             }
