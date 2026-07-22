@@ -1,0 +1,2 @@
+[terraform_servers]
+13.61.181.213 ansible_user=ubuntu

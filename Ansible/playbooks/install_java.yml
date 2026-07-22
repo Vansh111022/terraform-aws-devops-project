@@ -1,0 +1,7 @@
+---
+- name: Install Java
+  hosts: terraform_servers
+  become: yes
+
+  roles:
+    - java
