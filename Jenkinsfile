@@ -281,20 +281,20 @@ pipeline {
 
                 script {
 
-                env.EC2_PUBLIC_IP = sh(
+                    env.EC2_PUBLIC_IP = sh(
                     script: "terraform output -raw ec2_public_ip",
                     returnStdout: true
-                ).trim()
+                    ).trim()
 
-                sh """
-                cat > ansible/inventory/hosts <<EOF
-                [terraform_servers]
-                ${env.EC2_PUBLIC_IP} ansible_user=ubuntu
-                EOF
-                """
+                    writeFile file: 'ansible/inventory/hosts', text: """[terraform_servers]
+                    ${env.EC2_PUBLIC_IP} ansible_user=ubuntu
+                    """
 
-                echo "Inventory Created Successfully"
-                echo "Target Host : ${env.EC2_PUBLIC_IP}"
+                        echo "Inventory Created Successfully"
+
+                    sh '''
+                    cat ansible/inventory/hosts
+                    '''
                 }
             }
 
