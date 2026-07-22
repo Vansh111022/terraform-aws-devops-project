@@ -1,2 +1,2 @@
 [terraform_servers]
-13.61.181.213 ansible_user=ubuntu
+16.171.233.220 ansible_user=ubuntu
