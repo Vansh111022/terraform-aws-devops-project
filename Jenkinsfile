@@ -291,7 +291,7 @@ pipeline {
                 [terraform_servers]
                 ${env.EC2_PUBLIC_IP} ansible_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/dynamic-agent-key-pair.pem
                 EOF
-                """"
+                """
 
                 echo "Inventory Created Successfully"
                 echo "Target Host : ${env.EC2_PUBLIC_IP}"
@@ -335,7 +335,8 @@ pipeline {
                 sh '''
                 cd ansible
 
-                ansible-playbook -i inventory/hosts playbooks/site.yml'''
+                ansible-playbook -i inventory/hosts playbooks/site.yml
+                '''
 
             }
         }
@@ -362,7 +363,8 @@ pipeline {
 
                 ansible -i inventory/hosts terraform_servers -m shell -a "docker ps"
                 
-                ansible -i inventory/hosts terraform_servers -m shell -a "systemctl is-active docker"                '''
+                ansible -i inventory/hosts terraform_servers -m shell -a "systemctl is-active docker"                
+                '''
 
             }
         }
