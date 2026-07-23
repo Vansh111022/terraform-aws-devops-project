@@ -154,6 +154,46 @@ pipeline {
 
         }
 
+        stage('Start EC2 Instance') {
+
+            when {
+                expression {
+                params.DEPLOYMENT_MODE == 'Update Infrastructure'
+                }
+            }
+
+            steps {
+
+                echo "========== START EC2 =========="
+
+                sh '''
+                INSTANCE_ID=$(terraform output -raw ec2_instance_id)
+
+                echo "Starting EC2 : $INSTANCE_ID"
+
+                aws ec2 start-instances \
+                --instance-ids $INSTANCE_ID
+
+                echo "Waiting for EC2..."
+
+                aws ec2 wait instance-running \
+                --instance-ids $INSTANCE_ID
+
+                echo "Waiting for Status Checks..."
+
+                aws ec2 wait instance-status-ok \
+                --instance-ids $INSTANCE_ID
+
+                echo "EC2 Started Successfully"
+
+                aws ec2 describe-instances \
+                --instance-ids $INSTANCE_ID \
+                --query "Reservations[0].Instances[0].PublicIpAddress" \
+                --output text
+                '''
+            }
+        }
+
         stage('Terraform Outputs') {
 
             steps {
@@ -280,6 +320,12 @@ pipeline {
                 echo "========== GENERATE ANSIBLE INVENTORY =========="
 
                 script {
+                    sh '''
+                    echo "========== DEBUG =========="
+                    pwd
+                    ls -la
+                    terraform output
+                    '''
 
                     env.EC2_PUBLIC_IP = sh(
                     script: "terraform output -raw ec2_public_ip",
