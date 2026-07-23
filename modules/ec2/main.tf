@@ -6,6 +6,8 @@ resource "aws_instance" "ubuntu" {
 
   subnet_id              = var.public_subnet_id
 
+  associate_public_ip_address = true
+
   key_name               = var.key_name
 
   vpc_security_group_ids = [
