@@ -285,6 +285,7 @@ pipeline {
                     script: "terraform output -raw ec2_public_ip",
                     returnStdout: true
                     ).trim()
+                    echo "EC2 PUBLIC IP = '${env.EC2_PUBLIC_IP}'"
 
                     writeFile file: 'ansible/inventory/hosts', text: """[terraform_servers]
                     ${env.EC2_PUBLIC_IP} ansible_user=ubuntu
