@@ -14,6 +14,6 @@ private_subnet_cidr = "10.0.2.0/24"
 
 ami_id = "ami-0ca988064d5549965"
 
-instance_type = "t3.micro"
+instance_type = "m7i-flex.large"
 
 key_name = "dynamic-agent-key-pair"

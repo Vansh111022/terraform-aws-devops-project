@@ -11,9 +11,9 @@ variable "ami_id" {
 }
 
 variable "instance_type" {
-
-  type = string
-
+  description = "EC2 Instance Type"
+  type        = string
+  default     = "m7i-flex.large"
 }
 
 variable "key_name" {
